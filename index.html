@@ -12,6 +12,30 @@
       <h1>ICEDew Valley</h1>
     </header>
 
+    <div id="toolbar">
+      <div id="selected-tool">
+        <span>Ação Atual:</span>
+        <img src="assets/enxada.png" alt="Ferramenta Selecionada" />
+        <p>Enxada</p>
+      </div>
+      <div class="actions-container">
+        <h3>Ferramentas</h3>
+        <button class="tool-button selected" data-action="enxada">
+          <img src="assets/enxada.png" alt="Enxada" />
+        </button>
+        <h3>Sementes</h3>
+        <button class="tool-button" data-action="cenoura">
+          <img src="assets/pacote_cenoura.png" alt="Semente de Cenoura" />
+        </button>
+        <button class="tool-button" data-action="tomate">
+          <img src="assets/pacote_tomate.png" alt="Semente de Tomate" />
+        </button>
+        <button class="tool-button" data-action="milho">
+          <img src="assets/pacote_milho.png" alt="Semente de Milho" />
+        </button>
+      </div>
+    </div>
+
     <main>
       <div id="game-grid"></div>
     </main>
