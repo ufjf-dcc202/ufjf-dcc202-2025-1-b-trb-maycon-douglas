@@ -1,4 +1,41 @@
+/* Estilos gerais para a página */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f8ff;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
 h1 {
   font-size: 2em;
-  color: #971a82;
+  color: #8b4513;
+}
+
+/* Estilos para o container da grade */
+#game-grid {
+  display: grid; /* grid layout para organizar as células */
+
+  /* Cria 12 colunas, cada uma com uma fração igual do espaço (1fr) */
+  grid-template-columns: repeat(12, 1fr);
+
+  /* Tamanho fixo para o canteiro */
+  width: 600px;
+  height: 600px;
+
+  border: 5px solid #8b4513;
+  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para cada célula da grade */
+.grid-cell {
+  background-color: #8fbc8f;
+
+  border: 1px solid #6b8e23;
+
+  /* Garante que a borda não aumente o tamanho da célula */
+  box-sizing: border-box;
 }
