@@ -32,10 +32,16 @@ h1 {
 
 /* Estilos para cada célula da grade */
 .grid-cell {
-  background-color: #8fbc8f;
+  /* Estas duas propriedades garantem que a imagem preencha a célula */
+  background-size: cover;
+  background-position: center;
 
   border: 1px solid #6b8e23;
-
-  /* Garante que a borda não aumente o tamanho da célula */
   box-sizing: border-box;
+}
+
+/* Adiciona um feedback visual para o jogador saber que pode clicar */
+.grid-cell.pedra,
+.grid-cell.erva-daninha {
+  cursor: pointer;
 }
