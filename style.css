@@ -40,6 +40,8 @@ h1 {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 #next-day-btn:hover {
