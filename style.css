@@ -24,7 +24,7 @@ h1 {
   font-size: 16px;
   font-weight: bold;
   color: white;
-  background-color: #3cb371; /* Verde médio */
+  background-color: #3cb371;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -32,7 +32,7 @@ h1 {
 }
 
 #next-day-btn:hover {
-  background-color: #2e8b57; /* Verde escuro */
+  background-color: #2e8b57;
 }
 
 #toolbar {

@@ -1,4 +1,3 @@
-// script.js
 console.log("✅ O script.js está conectado corretamente ao index.html!");
 
 // Aguarda que todo o conteúdo da página seja carregado
@@ -10,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const toolbar = document.getElementById("toolbar");
   const selectedToolUI = document.getElementById("selected-tool");
   let currentAction = "enxada"; // Ação inicial
+  const nextDayBtn = document.getElementById("next-day-btn");
 
   // Decide aleatoriamente o estado inicial de cada célula
   function initializeGridState() {
@@ -49,26 +49,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const cells = document.querySelectorAll(".grid-cell");
     cells.forEach((cell, index) => {
       const cellState = gridState[index];
-      let image = "";
+      let images = [];
       let className = `grid-cell ${cellState.type}`;
 
-      // Limpa estilos antigos para evitar acúmulo
-      cell.style.backgroundColor = "";
-
       if (cellState.type === "plantado") {
-        const seedImage = `url('assets/semente_${cellState.seed}.png')`;
+        let plantImage;
+        if (cellState.stage === 0) {
+          plantImage = `url('assets/semente_${cellState.seed}.png')`;
+        } else {
+          plantImage = `url('assets/${cellState.seed}_etapa_${cellState.stage}.png')`;
+        }
+        images.push(plantImage);
+        if (cellState.watered) {
+          images.push(`url('assets/solo_molhado.png')`);
+        }
+        images.push(`url('assets/arado.png')`);
+        className += ` seed-${cellState.seed}`;
+      }
+      // Condição para planta morta
+      else if (cellState.type === "planta_morta") {
+        const deadPlantImage = `url('assets/planta_morta.png')`;
         const soilImage = `url('assets/arado.png')`;
 
-        // A primeira imagem na lista fica por CIMA. A segunda fica por BAIXO.
-        cell.style.backgroundImage = `${seedImage}, ${soilImage}`;
-
-        className += ` seed-${cellState.seed}`;
+        // Empilha a imagem da planta morta sobre o solo arado
+        images.push(deadPlantImage, soilImage);
       } else {
-        // Para todos os outros casos, apenas uma imagem é usada
-        image = `url('assets/${cellState.type}.png')`;
-        cell.style.backgroundImage = image;
+        // Lógica para todos os outros tipos simples (grama, pedra, etc.)
+        images.push(`url('assets/${cellState.type}.png')`);
       }
 
+      cell.style.backgroundImage = images.join(", ");
       cell.className = className;
     });
   }
@@ -94,6 +104,20 @@ document.addEventListener("DOMContentLoaded", () => {
         stage: 0, // Estágio inicial de crescimento
         watered: false, // Ainda não foi regada
       };
+    }
+    // Lógica para REGAR
+    else if (
+      currentAction === "regador" &&
+      cellState.type === "plantado" &&
+      !cellState.watered
+    ) {
+      gridState[index].watered = true; // Marca como regada
+    } else if (
+      currentAction === "regador" &&
+      cellState.type === "plantado" &&
+      !cellState.watered
+    ) {
+      gridState[index].watered = true;
     }
     // Lógica para LIMPAR
     else if (cellState.type === "pedra" || cellState.type === "erva-daninha") {
@@ -138,8 +162,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function updateSelectedToolUI() {
+    const img = selectedToolUI.querySelector("img");
+    const p = selectedToolUI.querySelector("p");
+
+    if (currentAction === "enxada") {
+      img.src = "assets/enxada.png";
+      p.textContent = "Enxada";
+    } else if (currentAction === "regador") {
+      img.src = "assets/regador.png";
+      p.textContent = "Regador";
+    } else {
+      img.src = `assets/pacote_${currentAction}.png`;
+      p.textContent = `Semente de ${currentAction}`;
+    }
+  }
+
+  function passDay() {
+    gridState.forEach((cellState, index) => {
+      // A lógica só se aplica a células com plantas
+      if (cellState.type === "plantado") {
+        // Se a planta foi regada, ela cresce
+        if (cellState.watered) {
+          const maxGrowthStage = 3;
+          if (cellState.stage < maxGrowthStage) {
+            gridState[index].stage++; // Avança o estágio
+          }
+          gridState[index].watered = false; // A terra seca, precisa regar de novo amanhã
+        }
+        // Se não foi regada, ela morre
+        else {
+          gridState[index] = { type: "planta_morta" };
+        }
+      }
+    });
+
+    // Após processar todas as células, atualizamos a tela
+    renderGrid();
+    console.log("Um novo dia começou!");
+  }
+
   // Inicializa o jogo
   initializeGridState();
   createGridCells(); // Cria as células da grade
   renderGrid(); // Pinta as células com as imagens corretas
+  nextDayBtn.addEventListener("click", passDay);
 });
