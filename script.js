@@ -228,16 +228,18 @@ function handleToolbarClick(event) {
   }
 }
 
-// Aguarda que todo o conteúdo da página seja carregado
-document.addEventListener("DOMContentLoaded", () => {
-  gameGrid.addEventListener("click", handlerGridClick);
+// === INICIALIZAÇÃO DO JOGO  === \\
 
-  toolbar.addEventListener("click", handleToolbarClick);
-
-  // Inicializa o jogo
-  initializeGridState();
+function init() {
+  initializeGridState(); // Inicializa o estado do jogo
   createGridCells(); // Cria as células da grade
-  renderGrid(); // Pinta as células com as imagens corretas
-  nextDayBtn.addEventListener("click", passDay);
-  updateMoneyUI(); // Define o valor inicial na tela
-});
+  renderGrid(); // Renderiza a grade com as imagens corretas
+  updateMoneyUI(); // Atualiza a exibição do dinheiro do jogador
+
+  gameGrid.addEventListener("click", handlerGridClick); // Adiciona o manipulador de eventos para cliques no canteiro
+  toolbar.addEventListener("click", handleToolbarClick); // Adiciona o manipulador de eventos para cliques na barra de ferramentas
+  nextDayBtn.addEventListener("click", passDay); // Adiciona o manipulador de eventos para o botão de próximo dia
+}
+
+// Aguarda que todo o conteúdo da página seja carregado e inicia o jogo
+document.addEventListener("DOMContentLoaded", init);
