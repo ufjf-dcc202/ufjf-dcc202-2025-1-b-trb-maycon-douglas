@@ -1,4 +1,4 @@
-// CONSTANTES DO JOGO
+// === CONSTANTES DO JOGO === \\
 const GRID_SIZE = 12 * 12;
 const MAX_GROWTH_STAGE = 3; // número máximo de estágio do crescimento de uma planta
 
@@ -16,19 +16,20 @@ const SEED_COSTS = {
   milho: 15,
 };
 
-// ESTADOS DO JOGO
+// === ESTADOS DO JOGO  === \\
 let gridState = []; // Canteiro do jogo, onde cada célula tem um estado
 let playerMoney = 100; // Dinheiro do jogador, inicialmente 100
 let currentAction = "enxada"; // Ferramenta ou ação atual
 
+// === REFERÊNCIAS DO DOM  === \\
+const gameGrid = document.getElementById("game-grid"); // Seleciona a div do canteiro pelo seu ID
+const toolbar = document.getElementById("toolbar"); // Seleciona a barra de ferramentas pelo seu ID
+const selectedToolUI = document.getElementById("selected-tool"); // Selectiona a área que mostra a ferramenta selecionada
+const nextDayBtn = document.getElementById("next-day-btn"); // Seleciona o botão de PRÓXIMO DIA
+const moneyValueUI = document.getElementById("money-value"); // Seleciona o elemento que mostra o dinheiro do jogador
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
-  // Seleciona a div do canteiro pelo seu ID
-  const gameGrid = document.getElementById("game-grid");
-  const toolbar = document.getElementById("toolbar");
-  const selectedToolUI = document.getElementById("selected-tool");
-  const nextDayBtn = document.getElementById("next-day-btn");
-
   // Decide aleatoriamente o estado inicial de cada célula
   function initializeGridState() {
     gridState = []; // Limpa o estado anterior se houver
@@ -100,8 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.className = className;
     });
   }
-
-  const moneyValueUI = document.getElementById("money-value");
 
   function updateMoneyUI() {
     moneyValueUI.textContent = playerMoney;
