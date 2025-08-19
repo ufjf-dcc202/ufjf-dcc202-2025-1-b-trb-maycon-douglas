@@ -118,6 +118,30 @@ function updateSelectedToolUI() {
   }
 }
 
+// Avança o jogo para o próximo dia
+function passDay() {
+  gridState.forEach((cellState, index) => {
+    // A lógica só se aplica a células com plantas
+    if (cellState.type === "plantado") {
+      // Se a planta foi regada, ela cresce
+      if (cellState.watered) {
+        const MAX_GROWTH_STAGE = 3;
+        if (cellState.stage < MAX_GROWTH_STAGE) {
+          gridState[index].stage++; // Avança o estágio
+        }
+        gridState[index].watered = false; // A terra seca, precisa regar de novo amanhã
+      }
+      // Se não foi regada, ela morre
+      else {
+        gridState[index] = { type: "planta_morta" };
+      }
+    }
+  });
+
+  // Atualiza a tela após passar o dia
+  renderGrid();
+}
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
   gameGrid.addEventListener("click", (event) => {
@@ -204,46 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
       button.classList.add("selected");
     }
   });
-
-  function updateSelectedToolUI() {
-    const img = selectedToolUI.querySelector("img");
-    const p = selectedToolUI.querySelector("p");
-
-    if (currentAction === "enxada") {
-      img.src = "assets/enxada.png";
-      p.textContent = "Enxada";
-    } else if (currentAction === "regador") {
-      img.src = "assets/regador.png";
-      p.textContent = "Regador";
-    } else {
-      img.src = `assets/pacote_${currentAction}.png`;
-      p.textContent = `Semente de ${currentAction}`;
-    }
-  }
-
-  function passDay() {
-    gridState.forEach((cellState, index) => {
-      // A lógica só se aplica a células com plantas
-      if (cellState.type === "plantado") {
-        // Se a planta foi regada, ela cresce
-        if (cellState.watered) {
-          const MAX_GROWTH_STAGE = 3;
-          if (cellState.stage < MAX_GROWTH_STAGE) {
-            gridState[index].stage++; // Avança o estágio
-          }
-          gridState[index].watered = false; // A terra seca, precisa regar de novo amanhã
-        }
-        // Se não foi regada, ela morre
-        else {
-          gridState[index] = { type: "planta_morta" };
-        }
-      }
-    });
-
-    // Após processar todas as células, atualizamos a tela
-    renderGrid();
-    console.log("Um novo dia começou!");
-  }
 
   // Inicializa o jogo
   initializeGridState();
