@@ -67,7 +67,7 @@ h1 {
   border: 2px solid #8b4513;
   border-radius: 8px;
   background-color: #fffaf0;
-  width: 160px;
+  width: 120px;
 }
 
 #selected-tool img {
@@ -146,4 +146,8 @@ h1 {
   width: 48px;
   height: 48px;
   display: block;
+}
+
+.button-group {
+  display: flex;
 }
