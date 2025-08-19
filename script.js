@@ -58,46 +58,47 @@ function createGridCells() {
   }
 }
 
+// Atualiza o "visual" do canteiro com base no estado atual
+function renderGrid() {
+  const cells = document.querySelectorAll(".grid-cell");
+  cells.forEach((cell, index) => {
+    const cellState = gridState[index];
+    let images = [];
+    let className = `grid-cell ${cellState.type}`;
+
+    if (cellState.type === "plantado") {
+      let plantImage;
+      if (cellState.stage === 0) {
+        plantImage = `url('assets/semente_${cellState.seed}.png')`;
+      } else {
+        plantImage = `url('assets/${cellState.seed}_etapa_${cellState.stage}.png')`;
+      }
+      images.push(plantImage);
+      if (cellState.watered) {
+        images.push(`url('assets/solo_molhado.png')`);
+      }
+      images.push(`url('assets/arado.png')`);
+      className += ` seed-${cellState.seed}`;
+    }
+    // Condição para planta morta
+    else if (cellState.type === "planta_morta") {
+      const deadPlantImage = `url('assets/planta_morta.png')`;
+      const soilImage = `url('assets/arado.png')`;
+
+      // Empilha a imagem da planta morta sobre o solo arado
+      images.push(deadPlantImage, soilImage);
+    } else {
+      // Lógica para todos os outros tipos simples (grama, pedra, etc.)
+      images.push(`url('assets/${cellState.type}.png')`);
+    }
+
+    cell.style.backgroundImage = images.join(", ");
+    cell.className = className;
+  });
+}
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
-  function renderGrid() {
-    const cells = document.querySelectorAll(".grid-cell");
-    cells.forEach((cell, index) => {
-      const cellState = gridState[index];
-      let images = [];
-      let className = `grid-cell ${cellState.type}`;
-
-      if (cellState.type === "plantado") {
-        let plantImage;
-        if (cellState.stage === 0) {
-          plantImage = `url('assets/semente_${cellState.seed}.png')`;
-        } else {
-          plantImage = `url('assets/${cellState.seed}_etapa_${cellState.stage}.png')`;
-        }
-        images.push(plantImage);
-        if (cellState.watered) {
-          images.push(`url('assets/solo_molhado.png')`);
-        }
-        images.push(`url('assets/arado.png')`);
-        className += ` seed-${cellState.seed}`;
-      }
-      // Condição para planta morta
-      else if (cellState.type === "planta_morta") {
-        const deadPlantImage = `url('assets/planta_morta.png')`;
-        const soilImage = `url('assets/arado.png')`;
-
-        // Empilha a imagem da planta morta sobre o solo arado
-        images.push(deadPlantImage, soilImage);
-      } else {
-        // Lógica para todos os outros tipos simples (grama, pedra, etc.)
-        images.push(`url('assets/${cellState.type}.png')`);
-      }
-
-      cell.style.backgroundImage = images.join(", ");
-      cell.className = className;
-    });
-  }
-
   function updateMoneyUI() {
     moneyValueUI.textContent = playerMoney;
   }
