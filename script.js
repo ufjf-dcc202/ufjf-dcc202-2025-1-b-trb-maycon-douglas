@@ -104,78 +104,65 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   gameGrid.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("grid-cell")) return; // Sai se não for uma célula
+    if (!event.target.classList.contains("grid-cell")) return;
 
     const index = parseInt(event.target.dataset.index);
     const cellState = gridState[index];
 
-    // Se a célula contém uma planta no estágio máximo de crescimento
+    // Lógica de Colheita
     if (cellState.type === "plantado" && cellState.stage >= maxGrowthStage) {
-      // 1. Ganhar dinheiro
       const value = plantValues[cellState.seed];
       playerMoney += value;
       updateMoneyUI();
-      console.log(
-        `Colheu ${cellState.seed} por ${value}! Total: ${playerMoney}`
-      );
-
-      // 2. Resetar a célula para terra arada
       gridState[index] = { type: "arado" };
-
-      // 3. Re-renderizar e parar a execução para não fazer mais nada neste clique
       renderGrid();
       return;
     }
 
-    // Lógica para usar a ENXADA
-    if (currentAction === "enxada" && cellState.type === "grama") {
-      gridState[index] = { type: "arado" }; // Muda o estado para 'arado'
+    // todas as ações de preparação do solo acontecem com a enxada
+    if (currentAction === "enxada") {
+      // Se for grama, ara a terra
+      if (cellState.type === "grama") {
+        gridState[index] = { type: "arado" };
+      }
+      // Se for pedra ou erva daninha, limpa o terreno
+      else if (
+        cellState.type === "pedra" ||
+        cellState.type === "erva-daninha"
+      ) {
+        gridState[index] = { type: "grama" };
+      }
+      // Se for uma planta morta, também limpa, transformando em terra arada
+      else if (cellState.type === "planta_morta") {
+        gridState[index] = { type: "arado" };
+      }
     }
-    // Lógica para PLANTAR (verifica se a ação é uma das sementes)
+    // Lógica para PLANTAR (só funciona se a ação atual for uma semente)
     else if (
       ["cenoura", "tomate", "milho"].includes(currentAction) &&
       cellState.type === "arado"
     ) {
       const cost = seedCosts[currentAction];
-
-      // Verifica se o jogador tem dinheiro
       if (playerMoney >= cost) {
-        // 1. Deduzir o custo
         playerMoney -= cost;
         updateMoneyUI();
-
-        // 2. Plantar a semente (lógica que já tínhamos)
         gridState[index] = {
           type: "plantado",
           seed: currentAction,
           stage: 0,
           watered: false,
         };
-        console.log(
-          `Plantou ${currentAction} por ${cost}. Restam ${playerMoney}`
-        );
       } else {
-        // Se não tiver dinheiro, avisa o jogador
         alert("Dinheiro insuficiente para comprar esta semente!");
       }
     }
-    // Lógica para REGAR
+    // Lógica para REGAR (só funciona se a ação atual for o regador)
     else if (
       currentAction === "regador" &&
       cellState.type === "plantado" &&
       !cellState.watered
     ) {
-      gridState[index].watered = true; // Marca como regada
-    } else if (
-      currentAction === "regador" &&
-      cellState.type === "plantado" &&
-      !cellState.watered
-    ) {
       gridState[index].watered = true;
-    }
-    // Lógica para LIMPAR
-    else if (cellState.type === "pedra" || cellState.type === "erva-daninha") {
-      gridState[index] = { type: "grama" };
     }
 
     renderGrid();
