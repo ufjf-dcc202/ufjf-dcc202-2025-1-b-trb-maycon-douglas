@@ -28,27 +28,23 @@ const selectedToolUI = document.getElementById("selected-tool"); // Selectiona a
 const nextDayBtn = document.getElementById("next-day-btn"); // Seleciona o botão de PRÓXIMO DIA
 const moneyValueUI = document.getElementById("money-value"); // Seleciona o elemento que mostra o dinheiro do jogador
 
+// === FUNÇÕES DO JOGO  === \\
+
+// Popula o canteiro inicial com grama, pedras e ervas daninhas aleatoriamente
+function initializeGridState() {
+  gridState = []; // Limpa o estado anterior se houver
+  for (let i = 0; i < GRID_SIZE; i++) {
+    const randomNumber = Math.random(); // Gera um número entre 0 e 1
+    let cellType = "grama"; // O padrão é ser grama
+
+    if (randomNumber < 0.1) cellType = "pedra"; // 10% de chance de ser pedra
+    else if (randomNumber < 0.25) cellType = "erva-daninha"; // 15% de chance de ser erva daninha
+    gridState.push({ type: cellType });
+  }
+}
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
-  // Decide aleatoriamente o estado inicial de cada célula
-  function initializeGridState() {
-    gridState = []; // Limpa o estado anterior se houver
-    for (let i = 0; i < GRID_SIZE; i++) {
-      const randomNumber = Math.random(); // Gera um número entre 0 e 1
-      let cellType = "grama"; // O padrão é ser grama
-
-      if (randomNumber < 0.1) {
-        // 10% de chance de ser pedra
-        cellType = "pedra";
-      } else if (randomNumber < 0.25) {
-        // 15% de chance de ser erva daninha
-        cellType = "erva-daninha";
-      }
-
-      gridState.push({ type: cellType });
-    }
-  }
-
   // Cria as células da grade (canteiros individuais)
   function createGridCells() {
     gameGrid.innerHTML = ""; // Limpa a grade para garantir que não haja duplicatas
