@@ -1,5 +1,3 @@
-console.log("✅ O script.js está conectado corretamente ao index.html!");
-
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
   // Seleciona a div do canteiro pelo seu ID
