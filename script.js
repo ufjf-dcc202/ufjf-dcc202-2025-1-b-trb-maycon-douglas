@@ -16,16 +16,18 @@ const SEED_COSTS = {
   milho: 15,
 };
 
+// ESTADOS DO JOGO
+let gridState = []; // Canteiro do jogo, onde cada célula tem um estado
+let playerMoney = 100; // Dinheiro do jogador, inicialmente 100
+let currentAction = "enxada"; // Ferramenta ou ação atual
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
   // Seleciona a div do canteiro pelo seu ID
   const gameGrid = document.getElementById("game-grid");
-  let gridState = [];
   const toolbar = document.getElementById("toolbar");
   const selectedToolUI = document.getElementById("selected-tool");
-  let currentAction = "enxada"; // Ação inicial
   const nextDayBtn = document.getElementById("next-day-btn");
-  let playerMoney = 100; // Dinheiro inicial
 
   // Decide aleatoriamente o estado inicial de cada célula
   function initializeGridState() {
