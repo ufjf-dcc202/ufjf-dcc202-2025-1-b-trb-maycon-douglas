@@ -97,12 +97,29 @@ function renderGrid() {
   });
 }
 
+// Atualiza a exibição do dinheiro do jogador
+function updateMoneyUI() {
+  moneyValueUI.textContent = playerMoney;
+}
+
+// Atualiza a exibição da ferramenta selecionada
+function updateSelectedToolUI() {
+  const img = selectedToolUI.querySelector("img");
+  const p = selectedToolUI.querySelector("p");
+
+  // Define a imagem e o texto corretos para a ação atual
+  if (currentAction === "enxada") {
+    img.src = "assets/enxada.png";
+    p.textContent = "Enxada";
+  } else {
+    // Para todas as sementes
+    img.src = `assets/pacote_${currentAction}.png`;
+    p.textContent = `Semente de ${currentAction}`;
+  }
+}
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
-  function updateMoneyUI() {
-    moneyValueUI.textContent = playerMoney;
-  }
-
   gameGrid.addEventListener("click", (event) => {
     if (!event.target.classList.contains("grid-cell")) return;
 
@@ -187,21 +204,6 @@ document.addEventListener("DOMContentLoaded", () => {
       button.classList.add("selected");
     }
   });
-
-  function updateSelectedToolUI() {
-    const img = selectedToolUI.querySelector("img");
-    const p = selectedToolUI.querySelector("p");
-
-    // Define a imagem e o texto corretos para a ação atual
-    if (currentAction === "enxada") {
-      img.src = "assets/enxada.png";
-      p.textContent = "Enxada";
-    } else {
-      // Para todas as sementes
-      img.src = `assets/pacote_${currentAction}.png`;
-      p.textContent = `Semente de ${currentAction}`;
-    }
-  }
 
   function updateSelectedToolUI() {
     const img = selectedToolUI.querySelector("img");
