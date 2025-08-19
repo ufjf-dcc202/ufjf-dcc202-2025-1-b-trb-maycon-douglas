@@ -142,72 +142,74 @@ function passDay() {
   renderGrid();
 }
 
+// === MANIPULADORES DE EVENTO  === \\
+
+// Lida com cliques no canteiro do jogo (Colher, arar, plantar, regar...)
+function handlerGridClick(event) {
+  if (!event.target.classList.contains("grid-cell")) return;
+
+  const index = parseInt(event.target.dataset.index);
+  const cellState = gridState[index];
+
+  // Lógica de Colheita
+  if (cellState.type === "plantado" && cellState.stage >= MAX_GROWTH_STAGE) {
+    const value = PLANT_VALUES[cellState.seed];
+    playerMoney += value;
+    updateMoneyUI();
+    gridState[index] = { type: "arado" };
+    renderGrid();
+    return;
+  }
+
+  // todas as ações de preparação do solo acontecem com a enxada
+  if (currentAction === "enxada") {
+    // Se for grama, ara a terra
+    if (cellState.type === "grama") {
+      gridState[index] = { type: "arado" };
+    }
+    // Se for pedra ou erva daninha, limpa o terreno
+    else if (cellState.type === "pedra" || cellState.type === "erva-daninha") {
+      gridState[index] = { type: "grama" };
+    }
+    // Se for uma planta morta, também limpa, transformando em terra arada
+    else if (cellState.type === "planta_morta") {
+      gridState[index] = { type: "arado" };
+    }
+  }
+  // Lógica para PLANTAR (só funciona se a ação atual for uma semente)
+  else if (
+    ["cenoura", "tomate", "milho"].includes(currentAction) &&
+    cellState.type === "arado"
+  ) {
+    const cost = SEED_COSTS[currentAction];
+    if (playerMoney >= cost) {
+      playerMoney -= cost;
+      updateMoneyUI();
+      gridState[index] = {
+        type: "plantado",
+        seed: currentAction,
+        stage: 0,
+        watered: false,
+      };
+    } else {
+      alert("Dinheiro insuficiente para comprar esta semente!");
+    }
+  }
+  // Lógica para REGAR (só funciona se a ação atual for o regador)
+  else if (
+    currentAction === "regador" &&
+    cellState.type === "plantado" &&
+    !cellState.watered
+  ) {
+    gridState[index].watered = true;
+  }
+
+  renderGrid();
+}
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
-  gameGrid.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("grid-cell")) return;
-
-    const index = parseInt(event.target.dataset.index);
-    const cellState = gridState[index];
-
-    // Lógica de Colheita
-    if (cellState.type === "plantado" && cellState.stage >= MAX_GROWTH_STAGE) {
-      const value = PLANT_VALUES[cellState.seed];
-      playerMoney += value;
-      updateMoneyUI();
-      gridState[index] = { type: "arado" };
-      renderGrid();
-      return;
-    }
-
-    // todas as ações de preparação do solo acontecem com a enxada
-    if (currentAction === "enxada") {
-      // Se for grama, ara a terra
-      if (cellState.type === "grama") {
-        gridState[index] = { type: "arado" };
-      }
-      // Se for pedra ou erva daninha, limpa o terreno
-      else if (
-        cellState.type === "pedra" ||
-        cellState.type === "erva-daninha"
-      ) {
-        gridState[index] = { type: "grama" };
-      }
-      // Se for uma planta morta, também limpa, transformando em terra arada
-      else if (cellState.type === "planta_morta") {
-        gridState[index] = { type: "arado" };
-      }
-    }
-    // Lógica para PLANTAR (só funciona se a ação atual for uma semente)
-    else if (
-      ["cenoura", "tomate", "milho"].includes(currentAction) &&
-      cellState.type === "arado"
-    ) {
-      const cost = SEED_COSTS[currentAction];
-      if (playerMoney >= cost) {
-        playerMoney -= cost;
-        updateMoneyUI();
-        gridState[index] = {
-          type: "plantado",
-          seed: currentAction,
-          stage: 0,
-          watered: false,
-        };
-      } else {
-        alert("Dinheiro insuficiente para comprar esta semente!");
-      }
-    }
-    // Lógica para REGAR (só funciona se a ação atual for o regador)
-    else if (
-      currentAction === "regador" &&
-      cellState.type === "plantado" &&
-      !cellState.watered
-    ) {
-      gridState[index].watered = true;
-    }
-
-    renderGrid();
-  });
+  gameGrid.addEventListener("click", handlerGridClick);
 
   toolbar.addEventListener("click", (event) => {
     // Encontra o botão que foi clicado, mesmo que o clique tenha sido na imagem dentro dele
