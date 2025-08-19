@@ -14,6 +14,17 @@ h1 {
   color: #8b4513;
 }
 
+#player-wallet {
+  padding: 10px 15px;
+  background-color: #ffd700;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
 #day-passer {
   margin-left: auto; /* Empurra o botão para a direita */
   padding-right: 20px;

@@ -2,7 +2,7 @@ console.log("✅ O script.js está conectado corretamente ao index.html!");
 
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
-  // Selecionamos o nosso a div do canteiro pelo seu ID
+  // Seleciona a div do canteiro pelo seu ID
   const gameGrid = document.getElementById("game-grid");
   const gridSize = 12 * 12; // Total de células na grade (144)
   let gridState = [];
@@ -10,6 +10,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedToolUI = document.getElementById("selected-tool");
   let currentAction = "enxada"; // Ação inicial
   const nextDayBtn = document.getElementById("next-day-btn");
+  let playerMoney = 100; // Dinheiro inicial
+  const maxGrowthStage = 3; // O estágio em que a planta está pronta para colher
+
+  const plantValues = {
+    cenoura: 25,
+    tomate: 50,
+    milho: 75,
+  };
+
+  const seedCosts = {
+    cenoura: 5,
+    tomate: 10,
+    milho: 15,
+  };
 
   // Decide aleatoriamente o estado inicial de cada célula
   function initializeGridState() {
@@ -83,11 +97,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const moneyValueUI = document.getElementById("money-value");
+
+  function updateMoneyUI() {
+    moneyValueUI.textContent = playerMoney;
+  }
+
   gameGrid.addEventListener("click", (event) => {
     if (!event.target.classList.contains("grid-cell")) return; // Sai se não for uma célula
 
     const index = parseInt(event.target.dataset.index);
     const cellState = gridState[index];
+
+    // Se a célula contém uma planta no estágio máximo de crescimento
+    if (cellState.type === "plantado" && cellState.stage >= maxGrowthStage) {
+      // 1. Ganhar dinheiro
+      const value = plantValues[cellState.seed];
+      playerMoney += value;
+      updateMoneyUI();
+      console.log(
+        `Colheu ${cellState.seed} por ${value}! Total: ${playerMoney}`
+      );
+
+      // 2. Resetar a célula para terra arada
+      gridState[index] = { type: "arado" };
+
+      // 3. Re-renderizar e parar a execução para não fazer mais nada neste clique
+      renderGrid();
+      return;
+    }
 
     // Lógica para usar a ENXADA
     if (currentAction === "enxada" && cellState.type === "grama") {
@@ -98,12 +136,28 @@ document.addEventListener("DOMContentLoaded", () => {
       ["cenoura", "tomate", "milho"].includes(currentAction) &&
       cellState.type === "arado"
     ) {
-      gridState[index] = {
-        type: "plantado",
-        seed: currentAction,
-        stage: 0, // Estágio inicial de crescimento
-        watered: false, // Ainda não foi regada
-      };
+      const cost = seedCosts[currentAction];
+
+      // Verifica se o jogador tem dinheiro
+      if (playerMoney >= cost) {
+        // 1. Deduzir o custo
+        playerMoney -= cost;
+        updateMoneyUI();
+
+        // 2. Plantar a semente (lógica que já tínhamos)
+        gridState[index] = {
+          type: "plantado",
+          seed: currentAction,
+          stage: 0,
+          watered: false,
+        };
+        console.log(
+          `Plantou ${currentAction} por ${cost}. Restam ${playerMoney}`
+        );
+      } else {
+        // Se não tiver dinheiro, avisa o jogador
+        alert("Dinheiro insuficiente para comprar esta semente!");
+      }
     }
     // Lógica para REGAR
     else if (
@@ -207,4 +261,5 @@ document.addEventListener("DOMContentLoaded", () => {
   createGridCells(); // Cria as células da grade
   renderGrid(); // Pinta as células com as imagens corretas
   nextDayBtn.addEventListener("click", passDay);
+  updateMoneyUI(); // Define o valor inicial na tela
 });
