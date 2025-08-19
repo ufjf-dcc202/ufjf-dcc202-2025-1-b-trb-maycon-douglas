@@ -2,6 +2,10 @@
 const GRID_SIZE = 12 * 12;
 const MAX_GROWTH_STAGE = 3; // número máximo de estágio do crescimento de uma planta
 
+// Constantes para as imagens de fundo
+const deadPlantImage = `url('assets/planta_morta.png')`;
+const soilImage = `url('assets/arado.png')`;
+
 // Define valores de venda das plantas
 const PLANT_VALUES = {
   cenoura: 25,
@@ -22,11 +26,7 @@ let playerMoney = 100; // Dinheiro do jogador, inicialmente 100
 let currentAction = "enxada"; // Ferramenta ou ação atual
 
 // === REFERÊNCIAS DO DOM  === \\
-const gameGrid = document.getElementById("game-grid"); // Seleciona a div do canteiro pelo seu ID
-const toolbar = document.getElementById("toolbar"); // Seleciona a barra de ferramentas pelo seu ID
-const selectedToolUI = document.getElementById("selected-tool"); // Selectiona a área que mostra a ferramenta selecionada
-const nextDayBtn = document.getElementById("next-day-btn"); // Seleciona o botão de PRÓXIMO DIA
-const moneyValueUI = document.getElementById("money-value"); // Seleciona o elemento que mostra o dinheiro do jogador
+let gameGrid, toolbar, selectedToolUI, nextDayBtn, moneyValueUI;
 
 // === FUNÇÕES DO JOGO  === \\
 
@@ -82,9 +82,6 @@ function renderGrid() {
     }
     // Condição para planta morta
     else if (cellState.type === "planta_morta") {
-      const deadPlantImage = `url('assets/planta_morta.png')`;
-      const soilImage = `url('assets/arado.png')`;
-
       // Empilha a imagem da planta morta sobre o solo arado
       images.push(deadPlantImage, soilImage);
     } else {
@@ -111,6 +108,9 @@ function updateSelectedToolUI() {
   if (currentAction === "enxada") {
     img.src = "assets/enxada.png";
     p.textContent = "Enxada";
+  } else if (currentAction === "regador") {
+    img.src = "assets/regador.png";
+    p.textContent = "Regador";
   } else {
     // Para todas as sementes
     img.src = `assets/pacote_${currentAction}.png`;
@@ -231,6 +231,12 @@ function handleToolbarClick(event) {
 // === INICIALIZAÇÃO DO JOGO  === \\
 
 function init() {
+  gameGrid = document.getElementById("game-grid"); // Seleciona a div do canteiro pelo seu ID
+  toolbar = document.getElementById("toolbar"); // Seleciona a barra de ferramentas pelo seu ID
+  selectedToolUI = document.getElementById("selected-tool"); // Selectiona a área que mostra a ferramenta selecionada
+  nextDayBtn = document.getElementById("next-day-btn"); // Seleciona o botão de PRÓXIMO DIA
+  moneyValueUI = document.getElementById("money-value"); // Seleciona o elemento que mostra o dinheiro do jogador
+
   initializeGridState(); // Inicializa o estado do jogo
   createGridCells(); // Cria as células da grade
   renderGrid(); // Renderiza a grade com as imagens corretas
