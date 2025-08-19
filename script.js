@@ -1,32 +1,36 @@
+// CONSTANTES DO JOGO
+const GRID_SIZE = 12 * 12;
+const MAX_GROWTH_STAGE = 3; // número máximo de estágio do crescimento de uma planta
+
+// Define valores de venda das plantas
+const PLANT_VALUES = {
+  cenoura: 25,
+  tomate: 50,
+  milho: 75,
+};
+
+// Define os custos das sementes
+const SEED_COSTS = {
+  cenoura: 5,
+  tomate: 10,
+  milho: 15,
+};
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
   // Seleciona a div do canteiro pelo seu ID
   const gameGrid = document.getElementById("game-grid");
-  const gridSize = 12 * 12; // Total de células na grade (144)
   let gridState = [];
   const toolbar = document.getElementById("toolbar");
   const selectedToolUI = document.getElementById("selected-tool");
   let currentAction = "enxada"; // Ação inicial
   const nextDayBtn = document.getElementById("next-day-btn");
   let playerMoney = 100; // Dinheiro inicial
-  const maxGrowthStage = 3; // O estágio em que a planta está pronta para colher
-
-  const plantValues = {
-    cenoura: 25,
-    tomate: 50,
-    milho: 75,
-  };
-
-  const seedCosts = {
-    cenoura: 5,
-    tomate: 10,
-    milho: 15,
-  };
 
   // Decide aleatoriamente o estado inicial de cada célula
   function initializeGridState() {
     gridState = []; // Limpa o estado anterior se houver
-    for (let i = 0; i < gridSize; i++) {
+    for (let i = 0; i < GRID_SIZE; i++) {
       const randomNumber = Math.random(); // Gera um número entre 0 e 1
       let cellType = "grama"; // O padrão é ser grama
 
@@ -45,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Cria as células da grade (canteiros individuais)
   function createGridCells() {
     gameGrid.innerHTML = ""; // Limpa a grade para garantir que não haja duplicatas
-    for (let i = 0; i < gridSize; i++) {
+    for (let i = 0; i < GRID_SIZE; i++) {
       // Cria um novo elemento div para ser uma célula da grade
       const cell = document.createElement("div");
       // Adiciona uma classe a essa div para que possamos estilizá-la com CSS
@@ -108,8 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const cellState = gridState[index];
 
     // Lógica de Colheita
-    if (cellState.type === "plantado" && cellState.stage >= maxGrowthStage) {
-      const value = plantValues[cellState.seed];
+    if (cellState.type === "plantado" && cellState.stage >= MAX_GROWTH_STAGE) {
+      const value = PLANT_VALUES[cellState.seed];
       playerMoney += value;
       updateMoneyUI();
       gridState[index] = { type: "arado" };
@@ -140,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ["cenoura", "tomate", "milho"].includes(currentAction) &&
       cellState.type === "arado"
     ) {
-      const cost = seedCosts[currentAction];
+      const cost = SEED_COSTS[currentAction];
       if (playerMoney >= cost) {
         playerMoney -= cost;
         updateMoneyUI();
@@ -223,8 +227,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (cellState.type === "plantado") {
         // Se a planta foi regada, ela cresce
         if (cellState.watered) {
-          const maxGrowthStage = 3;
-          if (cellState.stage < maxGrowthStage) {
+          const MAX_GROWTH_STAGE = 3;
+          if (cellState.stage < MAX_GROWTH_STAGE) {
             gridState[index].stage++; // Avança o estágio
           }
           gridState[index].watered = false; // A terra seca, precisa regar de novo amanhã
