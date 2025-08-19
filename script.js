@@ -207,29 +207,32 @@ function handlerGridClick(event) {
   renderGrid();
 }
 
+// Lida com cliques na barra de ferramentas para selecionar uma ação
+function handleToolbarClick(event) {
+  // Encontra o botão que foi clicado, mesmo que o clique tenha sido na imagem dentro dele
+  const button = event.target.closest(".tool-button");
+
+  if (button) {
+    // Pega a ação do atributo 'data-action' que definimos no HTML
+    const action = button.dataset.action;
+    currentAction = action;
+
+    // Atualiza a UI para mostrar a seleção
+    updateSelectedToolUI();
+
+    // Atualiza o visual dos botões
+    document.querySelectorAll(".tool-button").forEach((btn) => {
+      btn.classList.remove("selected");
+    });
+    button.classList.add("selected");
+  }
+}
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
   gameGrid.addEventListener("click", handlerGridClick);
 
-  toolbar.addEventListener("click", (event) => {
-    // Encontra o botão que foi clicado, mesmo que o clique tenha sido na imagem dentro dele
-    const button = event.target.closest(".tool-button");
-
-    if (button) {
-      // Pega a ação do atributo 'data-action' que definimos no HTML
-      const action = button.dataset.action;
-      currentAction = action;
-
-      // Atualiza a UI para mostrar a seleção
-      updateSelectedToolUI();
-
-      // Atualiza o visual dos botões
-      document.querySelectorAll(".tool-button").forEach((btn) => {
-        btn.classList.remove("selected");
-      });
-      button.classList.add("selected");
-    }
-  });
+  toolbar.addEventListener("click", handleToolbarClick);
 
   // Inicializa o jogo
   initializeGridState();
