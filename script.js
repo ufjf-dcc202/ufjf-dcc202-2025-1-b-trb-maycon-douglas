@@ -43,23 +43,23 @@ function initializeGridState() {
   }
 }
 
+// Cria as células da grade (canteiros individuais)
+function createGridCells() {
+  gameGrid.innerHTML = ""; // Limpa a grade para garantir que não haja duplicatas
+  for (let i = 0; i < GRID_SIZE; i++) {
+    // Cria um novo elemento div para ser uma célula da grade
+    const cell = document.createElement("div");
+    // Adiciona uma classe a essa div para que seja estilizada com CSS
+    cell.classList.add("grid-cell");
+    // Define 'data-index' para saber qual célula é qual ao clicar
+    cell.dataset.index = i;
+    // Adiciona a célula recém-criada dentro do game-grid
+    gameGrid.appendChild(cell);
+  }
+}
+
 // Aguarda que todo o conteúdo da página seja carregado
 document.addEventListener("DOMContentLoaded", () => {
-  // Cria as células da grade (canteiros individuais)
-  function createGridCells() {
-    gameGrid.innerHTML = ""; // Limpa a grade para garantir que não haja duplicatas
-    for (let i = 0; i < GRID_SIZE; i++) {
-      // Cria um novo elemento div para ser uma célula da grade
-      const cell = document.createElement("div");
-      // Adiciona uma classe a essa div para que possamos estilizá-la com CSS
-      cell.classList.add("grid-cell");
-      // Define 'data-index' para saber qual célula é qual ao clicar
-      cell.dataset.index = i;
-      // Adiciona a célula recém-criada dentro do game-grid
-      gameGrid.appendChild(cell);
-    }
-  }
-
   function renderGrid() {
     const cells = document.querySelectorAll(".grid-cell");
     cells.forEach((cell, index) => {
